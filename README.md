@@ -4,7 +4,7 @@ A DLL Plugin for SimCity 4 that adds a Humane Society ordinance to the game.
 This ordinance is based on the Humane Society ordinance suggestion in [this](https://community.simtropolis.com/forums/topic/26215-ordinances-complete-list/?do=findComment&comment=703433) post, and has the following properties:
 
 **Availability Requirements:** At least 1 hospital or clinic. The original suggestion did not include this, but I think it makes sense given the per hospital/clinic cost.      
-**Expense:** Base cost of $-50/month plus $-5 per hospital/clinic.    
+**Expense:** `Base cost of $-50/month plus $-5 per hospital/clinic`.    
 **Effects:**
 * Increases mayor rating by 5 points.
 * Reduces crime by 5%.
