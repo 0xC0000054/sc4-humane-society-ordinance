@@ -30,6 +30,12 @@
     <ClInclude Include="version.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\vendor\include\cISC4DemandSimulator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vendor\include\cISC4Demand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HumaneSocietyOrdinanceDllDirector.cpp">
@@ -74,6 +80,7 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="vcpkg.json" />
+    <None Include=".editorconfig" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis" />

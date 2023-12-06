@@ -11,6 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\vendor\include\cISC4Demand.h" />
+    <ClInclude Include="..\vendor\include\cISC4DemandSimulator.h" />
     <ClInclude Include="HumaneSocietyOrdinance.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="OrdinanceBase.h" />
@@ -34,6 +36,7 @@
     <ResourceCompile Include="version.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".editorconfig" />
     <None Include="packages.config" />
     <None Include="vcpkg.json" />
   </ItemGroup>
