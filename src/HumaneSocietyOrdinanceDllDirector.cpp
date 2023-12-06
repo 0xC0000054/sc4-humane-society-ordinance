@@ -112,10 +112,6 @@ public:
 
 		if (pCity)
 		{
-			_locale_t currentLocale = _get_current_locale();
-
-			unsigned int codePage = ((__crt_locale_data_public*)currentLocale->locinfo)->_locale_lc_codepage;
-
 			cISC4OrdinanceSimulator* pOrdinanceSimulator = pCity->GetOrdinanceSimulator();
 
 			if (pOrdinanceSimulator)
