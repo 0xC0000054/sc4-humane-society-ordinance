@@ -17,7 +17,6 @@
 
 static constexpr uint32_t GZCLSID_OrdinancePropertyHolder = 0xd0f95c79;
 static constexpr uint32_t GZIID_OrdinancePropertyHolder = 0x84672560;
-static constexpr uint32_t GZIID_cISCPropertyHolder = 0x25216283;
 
 namespace
 {
@@ -382,6 +381,12 @@ bool OrdinancePropertyHolder::AddProperty(uint32_t dwProperty, void* pUnknown, u
     return false;
 }
 
+bool OrdinancePropertyHolder::AddProperty(uint32_t dwProperty, float value)
+{
+	properties.push_back(cSCBaseProperty(dwProperty, value));
+	return true;
+}
+
 bool OrdinancePropertyHolder::CopyAddProperty(cISCProperty* pProperty, bool bUnknown)
 {
     return false;
@@ -409,7 +414,16 @@ bool OrdinancePropertyHolder::RemoveAllProperties(void)
 
 bool OrdinancePropertyHolder::EnumProperties(FunctionPtr1 pFunction1, void* pData)
 {
-    return false;
+	size_t propertyCount = properties.size();
+
+	for (size_t i = 0; i < propertyCount; i++)
+	{
+		cISCProperty* property = &properties[i];
+
+		pFunction1(property, pData);
+	}
+
+    return true;
 }
 
 bool OrdinancePropertyHolder::EnumProperties(FunctionPtr2 pFunction2, FunctionPtr1 pFunctionPipe)

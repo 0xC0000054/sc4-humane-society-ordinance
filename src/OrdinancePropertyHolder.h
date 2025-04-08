@@ -1,17 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////
 //
-// This file is part of sc4-add-new-ordinances, a DLL Plugin for SimCity 4
-// that experiments with adding new ordinances to the game.
-//
-// Copyright (c) 2023 Nicholas Hayes
-//
-// This file is licensed under terms of the MIT License.
-// See LICENSE.txt for more information.
-//
-////////////////////////////////////////////////////////////////////////////
-
-////////////////////////////////////////////////////////////////////////////
-//
 // This file is part of sc4-humane-society-ordinance, a DLL Plugin for
 // SimCity 4 that adds a Humane Society ordinance to the game.
 //
@@ -63,6 +51,7 @@ public:
 	virtual bool AddProperty(uint32_t dwProperty, cIGZString const& szValue);
 	virtual bool AddProperty(uint32_t dwProperty, int32_t lValue, bool bUnknown);
 	virtual bool AddProperty(uint32_t dwProperty, void* pUnknown, uint32_t dwUnknown, bool bUnknown);
+	virtual bool AddProperty(uint32_t dwProperty, float value); // Not part of the SC4 API, but a convenience method.
 
 	virtual bool CopyAddProperty(cISCProperty* pProperty, bool bUnknown);
 
