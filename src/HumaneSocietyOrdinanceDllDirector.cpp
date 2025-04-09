@@ -39,15 +39,12 @@
 #include <Windows.h>
 #include "wil/resource.h"
 #include "wil/win32_helpers.h"
-#include "boost/property_tree/ptree.hpp"
-#include "boost/property_tree/ini_parser.hpp"
 
 static constexpr uint32_t kSC4MessagePostCityInit = 0x26D31EC1;
 static constexpr uint32_t kSC4MessagePreCityShutdown = 0x26D31EC2;
 
 static constexpr uint32_t kHumaneSocietyOrdinancePluginDirectorID = 0x5dc9005a;
 
-static constexpr std::string_view PluginConfigFileName = "SC4HumaneSocietyOrdinance.ini";
 static constexpr std::string_view PluginLogFileName = "SC4HumaneSocietyOrdinance.log";
 
 class HumaneSocietyOrdinanceDllDirector : public cRZMessage2COMDirector
@@ -55,12 +52,9 @@ class HumaneSocietyOrdinanceDllDirector : public cRZMessage2COMDirector
 public:
 
 	HumaneSocietyOrdinanceDllDirector()
-		: humaneSocietyOrdinance(), configFilePath(), nameOverride(), descriptionOverride()
+		: humaneSocietyOrdinance()
 	{
 		std::filesystem::path dllFolderPath = GetDllFolderPath();
-
-		configFilePath = dllFolderPath;
-		configFilePath /= PluginConfigFileName;
 
 		std::filesystem::path logFilePath = dllFolderPath;
 		logFilePath /= PluginLogFileName;
@@ -116,16 +110,18 @@ public:
 
 			if (pOrdinanceSimulator)
 			{
-				humaneSocietyOrdinance.PostCityInit(pCity);
-				humaneSocietyOrdinance.SetName(nameOverride);
-				humaneSocietyOrdinance.SetDescription(descriptionOverride);
-
-
-				// Only add the ordinance if it is not already present. If it is part
-				// of the city save file it will have already been loaded at this point.
 				if (!pOrdinanceSimulator->GetOrdinanceByID(humaneSocietyOrdinance.GetID()))
 				{
+					// Only add the ordinance if it is not already present. If it is part
+					// of the city save file it will have already been loaded at this point.
 					pOrdinanceSimulator->AddOrdinance(humaneSocietyOrdinance);
+				}
+
+				cISC4Ordinance* pOrdinance = pOrdinanceSimulator->GetOrdinanceByID(humaneSocietyOrdinance.GetID());
+
+				if (pOrdinance)
+				{
+					pOrdinance->Init();
 				}
 
 				DumpRegisteredOrdinances(pCity, pOrdinanceSimulator);
@@ -143,8 +139,13 @@ public:
 
 			if (pOrdinanceSimulator)
 			{
-				humaneSocietyOrdinance.PreCityShutdown(pCity);
-				pOrdinanceSimulator->RemoveOrdinance(humaneSocietyOrdinance);
+				cISC4Ordinance* pOrdinance = pOrdinanceSimulator->GetOrdinanceByID(humaneSocietyOrdinance.GetID());
+
+				if (pOrdinance)
+				{
+					pOrdinance->Shutdown();
+					pOrdinanceSimulator->RemoveOrdinance(*pOrdinance);
+				}
 			}
 		}
 	}
@@ -170,29 +171,6 @@ public:
 	bool PostAppInit()
 	{
 		Logger& logger = Logger::GetInstance();
-
-		try
-		{
-			std::ifstream stream(configFilePath, std::ifstream::in);
-			stream.imbue(std::locale("en-US.utf8"));
-
-			if (!stream)
-			{
-				throw std::runtime_error("Failed top open the settings file.");
-			}
-
-			boost::property_tree::ptree tree;
-
-			boost::property_tree::ini_parser::read_ini(stream, tree);
-
-			nameOverride.FromChar(tree.get<std::string>("Ordinance.Name").c_str());
-			descriptionOverride.FromChar(tree.get<std::string>("Ordinance.Description").c_str());
-		}
-		catch (const std::exception& e)
-		{
-			logger.WriteLine(LogOptions::Errors, e.what());
-			return true;
-		}
 
 		cIGZMessageServer2Ptr pMsgServ;
 		if (pMsgServ)
@@ -325,9 +303,6 @@ private:
 	}
 
 	HumaneSocietyOrdinance humaneSocietyOrdinance;
-	std::filesystem::path configFilePath;
-	cRZBaseString nameOverride;
-	cRZBaseString descriptionOverride;
 };
 
 cRZCOMDllDirector* RZGetCOMDllDirector() {

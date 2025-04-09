@@ -6,6 +6,8 @@ class cIGZUnknownList;
 class cIGZVariant;
 class cISCProperty;
 
+static const uint32_t GZIID_cISCPropertyHolder = 0x25216283;
+
 class cISCPropertyHolder : public cIGZUnknown
 {
 	public:

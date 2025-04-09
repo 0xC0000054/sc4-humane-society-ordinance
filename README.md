@@ -22,22 +22,8 @@ The plugin may work on Windows 7 or later with the [Microsoft Visual C++ 2022 x8
 ## Installation
 
 1. Close SimCity 4.
-2. Copy `SC4HumaneSocietyOrdinance.dll` and `SC4HumaneSocietyOrdinance.ini` into the Plugins folder in the SimCity 4 installation directory.
+2. Copy `SC4HumaneSocietyOrdinance.dll` and `HumaneSocietyOrdinanceText_English.dat` into the Plugins folder in the SimCity 4 installation directory.
 3. Start SimCity 4.
-
-## Changing the plugin text
-
-Because plugin DLLs don't have access to the game's code for handling LTEXT files, translation is handled
-by adjusting the `Name` and `Description` values in `SC4HumaneSocietyOrdinance.ini`.    
-Note that the text is expected to use UTF-8 encoding.
-
-1. Open `SC4HumaneSocietyOrdinance.ini` in a text editor (e.g. Notepad).    
-Note that depending on the permissions of your SimCity 4 installation directory you may need to start the text editor 
-with administrator permissions to be able to save the file.
-
-2. Adjust the `Name` and `Description` values in the `[Ordinance]` section.
-
-3. Save the file and start the game.
 
 ## Troubleshooting
 
@@ -53,7 +39,6 @@ See [LICENSE.txt](LICENSE.txt) for more information.
 
 [gzcom-dll](https://github.com/nsgomez/gzcom-dll/tree/master) Located in the vendor folder, MIT License.    
 [Windows Implementation Library](https://github.com/microsoft/wil) MIT License    
-[Boost.PropertyTree](https://www.boost.org/doc/libs/1_83_0/doc/html/property_tree.html) Boost Software License, Version 1.0.
 
 # Source Code
 

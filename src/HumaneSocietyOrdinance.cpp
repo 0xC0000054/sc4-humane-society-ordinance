@@ -41,31 +41,16 @@ HumaneSocietyOrdinance::HumaneSocietyOrdinance()
 	: OrdinanceBase(
 		kHumaneSocietyOrdinanceCLSID,
 		"Humane Society",
+		StringResourceKey(0xb5e861d2, 0x890a3afa),
 		"Program that provides a city animal shelter. Improves mayor rating and reduces crime.",
+		StringResourceKey(0xb5e861d2, 0x1cb1aced),
 		/* enactment income */		  -10,
 		/* retracment income */       -10,
 		/* monthly constant income */ -50,
 		/* monthly income factor */   -5.0f,
 		/* income ordinance */		  false,
-	    CreateOrdinanceEffects()),
-	  pResidentialSimulator(nullptr)
+	    CreateOrdinanceEffects())
 {
-}
-
-void HumaneSocietyOrdinance::SetName(const cIGZString& name)
-{
-	if (!this->name.IsEqual(name, false))
-	{
-		this->name.Copy(name);
-	}
-}
-
-void HumaneSocietyOrdinance::SetDescription(const cIGZString& description)
-{
-	if (!this->description.IsEqual(description, false))
-	{
-		this->description.Copy(description);
-	}
 }
 
 int64_t HumaneSocietyOrdinance::GetCurrentMonthlyIncome()
@@ -125,34 +110,3 @@ bool HumaneSocietyOrdinance::CheckConditions()
 	return result;
 }
 
-bool HumaneSocietyOrdinance::PostCityInit(cISC4City* pCity)
-{
-	bool result = OrdinanceBase::PostCityInit(pCity);
-
-	if (result)
-	{
-		if (pCity)
-		{
-			pResidentialSimulator = pCity->GetResidentialSimulator();
-			if (!pResidentialSimulator)
-			{
-				result = false;
-			}
-		}
-		else
-		{
-			result = false;
-		}
-	}
-
-	return result;
-}
-
-bool HumaneSocietyOrdinance::PreCityShutdown(cISC4City* pCity)
-{
-	bool result = OrdinanceBase::PreCityShutdown(pCity);
-
-	pResidentialSimulator = nullptr;
-
-	return result;
-}

@@ -6,7 +6,6 @@
 #include <string.h>
 
 static const uint32_t kRZBaseStringIID = 0xab13a836;
-static const uint32_t GZIID_cIGZString = 0x89b7dc8;
 
 cRZBaseString::cRZBaseString(cIGZString const& szSource)
 	: mnRefCount(0), szData(szSource.ToChar()) {

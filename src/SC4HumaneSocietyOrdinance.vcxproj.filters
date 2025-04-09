@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\GZCOM">
+      <UniqueIdentifier>{577f1378-71e2-4637-82b1-2ee2b57025b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GZCOM">
+      <UniqueIdentifier>{13d4380e-ae8c-4424-8df7-c7116755ae36}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OrdinanceBase.h">
@@ -30,11 +36,17 @@
     <ClInclude Include="version.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\vendor\include\cISC4DemandSimulator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\vendor\include\cISC4Demand.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\GZCOM</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vendor\include\cISC4DemandSimulator.h">
+      <Filter>Header Files\GZCOM</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vendor\include\StringResourceKey.h">
+      <Filter>Header Files\GZCOM</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vendor\include\StringResourceManager.h">
+      <Filter>Header Files\GZCOM</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -54,22 +66,25 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\vendor\src\cRZBaseString.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\GZCOM</Filter>
     </ClCompile>
     <ClCompile Include="..\vendor\src\cRZBaseVariant.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\GZCOM</Filter>
     </ClCompile>
     <ClCompile Include="..\vendor\src\cRZCOMDllDirector.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\GZCOM</Filter>
     </ClCompile>
     <ClCompile Include="..\vendor\src\cRZMessage2.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\GZCOM</Filter>
     </ClCompile>
     <ClCompile Include="..\vendor\src\cRZMessage2Standard.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\GZCOM</Filter>
     </ClCompile>
     <ClCompile Include="..\vendor\src\cSCBaseProperty.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\GZCOM</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vendor\src\StringResourceManager.cpp">
+      <Filter>Source Files\GZCOM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -79,7 +94,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="vcpkg.json" />
     <None Include=".editorconfig" />
   </ItemGroup>
   <ItemGroup>

@@ -14,9 +14,13 @@
 #include "cIGZDate.h"
 #include "cIGZIStream.h"
 #include "cIGZOStream.h"
+#include "cISC4App.h"
 #include "cISC4ResidentialSimulator.h"
 #include "cISC4Simulator.h"
+#include "cRZAutoRefCount.h"
+#include "GZServPtrs.h"
 #include "SC4Percentage.h"
+#include "StringResourceManager.h"
 #include <algorithm>
 #include <stdlib.h>
 
@@ -25,7 +29,9 @@ static const uint32_t GZIID_OrdinanceBase = 0x3cb94c9e;
 OrdinanceBase::OrdinanceBase(
 	uint32_t clsid,
 	const char* name,
+	const StringResourceKey& nameKey,
 	const char* description,
+	const StringResourceKey& descriptionKey,
 	int64_t enactmentIncome,
 	int64_t retracmentIncome,
 	int64_t monthlyConstantIncome,
@@ -34,7 +40,9 @@ OrdinanceBase::OrdinanceBase(
 	: clsid(clsid),
 	  refCount(0),
 	  name(name),
+	  nameKey(nameKey),
 	  description(description),
+	  descriptionKey(descriptionKey),
 	  enactmentIncome(enactmentIncome),
 	  retracmentIncome(retracmentIncome),
 	  monthlyConstantIncome(monthlyConstantIncome),
@@ -56,7 +64,9 @@ OrdinanceBase::OrdinanceBase(
 OrdinanceBase::OrdinanceBase(
 	uint32_t clsid,
 	const char* name,
+	const StringResourceKey& nameKey,
 	const char* description,
+	const StringResourceKey& descriptionKey,
 	int64_t enactmentIncome,
 	int64_t retracmentIncome,
 	int64_t monthlyConstantIncome,
@@ -66,7 +76,9 @@ OrdinanceBase::OrdinanceBase(
 	: clsid(clsid),
 	  refCount(0),
 	  name(name),
+	  nameKey(nameKey),
 	  description(description),
+	  descriptionKey(descriptionKey),
 	  enactmentIncome(enactmentIncome),
 	  retracmentIncome(retracmentIncome),
 	  monthlyConstantIncome(monthlyConstantIncome),
@@ -89,7 +101,9 @@ OrdinanceBase::OrdinanceBase(const OrdinanceBase& other)
 	: clsid(other.clsid),
 	  refCount(0),
 	  name(other.name),
+	  nameKey(other.nameKey),
 	  description(other.description),
+	  descriptionKey(other.descriptionKey),
 	  enactmentIncome(other.enactmentIncome),
 	  retracmentIncome(other.retracmentIncome),
 	  monthlyConstantIncome(other.monthlyConstantIncome),
@@ -112,7 +126,9 @@ OrdinanceBase::OrdinanceBase(OrdinanceBase&& other) noexcept
 	: clsid(other.clsid),
 	  refCount(0),
 	  name(std::move(name)),
+	  nameKey(nameKey),
 	  description(std::move(other.description)),
+	  descriptionKey(other.descriptionKey),
 	  enactmentIncome(other.enactmentIncome),
 	  retracmentIncome(other.retracmentIncome),
 	  monthlyConstantIncome(other.monthlyConstantIncome),
@@ -143,7 +159,9 @@ OrdinanceBase& OrdinanceBase::operator=(const OrdinanceBase& other)
 	clsid = other.clsid;
 	refCount = 0;
 	name = name;
+	nameKey = other.nameKey;
 	description = other.description;
+	descriptionKey = other.descriptionKey;
 	enactmentIncome = other.enactmentIncome;
 	retracmentIncome = other.retracmentIncome;
 	monthlyConstantIncome = other.monthlyConstantIncome;
@@ -172,7 +190,9 @@ OrdinanceBase& OrdinanceBase::operator=(OrdinanceBase&& other) noexcept
 	clsid = other.clsid;
 	refCount = 0;
 	name = std::move(name);
+	nameKey = nameKey;
 	description = std::move(other.description);
+	descriptionKey = other.descriptionKey;
 	enactmentIncome = other.enactmentIncome;
 	retracmentIncome = other.retracmentIncome;
 	monthlyConstantIncome = other.monthlyConstantIncome;
@@ -244,17 +264,33 @@ uint32_t OrdinanceBase::Release()
 
 bool OrdinanceBase::Init(void)
 {
+	bool result = false;
+
 	if (!haveDeserialized)
 	{
 		enabled = true;
 	}
-	return true;
+	LoadLocalizedStringResources();
+
+	cISC4AppPtr sc4App;
+
+	if (sc4App)
+	{
+		cISC4City* pCity = sc4App->GetCity();
+
+		if (pCity)
+		{
+			result = InitCityComponents(*pCity);
+		}
+	}
+
+	return result;
 }
 
 bool OrdinanceBase::Shutdown(void)
 {
 	enabled = false;
-	return true;
+	return ShutdownCityComponents();
 }
 
 int64_t OrdinanceBase::GetCurrentMonthlyIncome(void)
@@ -501,32 +537,20 @@ bool OrdinanceBase::ForceMonthlyAdjustedIncome(int64_t monthlyAdjustedIncome)
 	return true;
 }
 
-bool OrdinanceBase::PostCityInit(cISC4City* pCity)
+bool OrdinanceBase::InitCityComponents(cISC4City& pCity)
 {
-	bool result = false;
+	pResidentialSimulator = pCity.GetResidentialSimulator();
+	pSimulator = pCity.GetSimulator();
 
-	if (pCity)
-	{
-		pResidentialSimulator = pCity->GetResidentialSimulator();
-		pSimulator = pCity->GetSimulator();
-
-		if (pResidentialSimulator && pSimulator)
-		{
-			result = Init();
-		}
-	}
-
-	return result;
+	return pResidentialSimulator && pSimulator;
 }
 
-bool OrdinanceBase::PreCityShutdown(cISC4City* pCity)
+bool OrdinanceBase::ShutdownCityComponents()
 {
-	bool result = Shutdown();
-
 	pResidentialSimulator = nullptr;
 	pSimulator = nullptr;
 
-	return result;
+	return true;
 }
 
 bool OrdinanceBase::ReadBool(cIGZIStream& stream, bool& value)
@@ -735,4 +759,26 @@ bool OrdinanceBase::Read(cIGZIStream& stream)
 uint32_t OrdinanceBase::GetGZCLSID()
 {
 	return clsid;
+}
+
+void OrdinanceBase::LoadLocalizedStringResources()
+{
+	cRZAutoRefCount<cIGZString> localizedName;
+	cRZAutoRefCount<cIGZString> localizedDescription;
+
+	if (StringResourceManager::GetLocalizedString(nameKey, localizedName.AsPPObj()))
+	{
+		if (StringResourceManager::GetLocalizedString(descriptionKey, localizedDescription.AsPPObj()))
+		{
+			if (localizedName->Strlen() > 0 && !localizedName->IsEqual(this->name, false))
+			{
+				this->name.Copy(*localizedName);
+			}
+
+			if (localizedDescription->Strlen() > 0 && !localizedDescription->IsEqual(this->description, false))
+			{
+				this->description.Copy(*localizedDescription);
+			}
+		}
+	}
 }

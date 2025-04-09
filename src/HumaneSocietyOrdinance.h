@@ -19,14 +19,6 @@ public:
 
 	HumaneSocietyOrdinance();
 
-	// Sets the name of the ordinance.
-	// This is used to allow the value to be translated.
-	void SetName(const cIGZString& name);
-
-	// Sets the description of the ordinance.
-	// This is used to allow the value to be translated.
-	void SetDescription(const cIGZString& description);
-
 	// Gets the monthly income or expense when the ordinance is enabled.
 	// This ordinance uses a custom monthly cost calculation of:
 	// $-50/month plus $-5 per hospital/clinic.
@@ -36,15 +28,5 @@ public:
 	// to become available in the menu.
 	// This ordinance requires the city to have at least one hospital/clinic.
 	bool CheckConditions() override;
-
-	// Initializes the ordinance when entering a city.
-	bool PostCityInit(cISC4City* pCity) override;
-
-	// Shuts down the ordinance when exiting a city.
-	bool PreCityShutdown(cISC4City* pCity) override;
-
-private:
-
-	cISC4ResidentialSimulator* pResidentialSimulator;
 };
 
